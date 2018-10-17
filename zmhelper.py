@@ -1,12 +1,13 @@
 import ConfigParser
 import time
-import socket  
+import socket
 config = ConfigParser.RawConfigParser()
 config.read('/etc/zmhelper.conf')
 zmip = config.get('general', 'zoneminderip')
 zmport = config.getint('general', 'triggerport')
 
 if config.has_section('gpio'):
+  import RPi.GPIO as GPIO
   gpio_pinnum = config.getint('gpio', 'pin')
   gpio_bouncetime = config.getint('gpio', 'debounce')
   gpio_mid = config.get('gpio', 'monitor_id')
@@ -21,8 +22,6 @@ if config.has_section('gpio'):
     gpio_edge = GPIO.RISING
   else:
     gpio_edge = GPIO.FALLING
-  
-  import RPi.GPIO as GPIO
   GPIO.setmode(GPIO.BOARD)
   GPIO.setup(gpio_pinnum, GPIO.IN, pull_up_down=gpio_resistor)
   def handler(pin):
@@ -70,5 +69,5 @@ if config.has_section('onvif'):
       except:
         print('Error fetching event')
 else:
-  while True:  
+  while True:
     time.sleep(1e6)
