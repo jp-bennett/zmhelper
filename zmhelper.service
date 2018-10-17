@@ -1,0 +1,11 @@
+[Unit]
+Description=Zoneminder trigger script
+After=multi-user.target
+
+[Service]
+Type=simple
+User=pi
+ExecStart=/usr/bin/python /usr/local/bin/zmhelper.py
+
+[Install]
+WantedBy=multi-user.target
