@@ -20,13 +20,15 @@ if config.has_section('gpio'):
     gpio_resistor = GPIO.PUD_DOWN
   if config.get('gpio', 'edge') == 'rising':
     gpio_edge = GPIO.RISING
+    gpio_active_state = True
   else:
     gpio_edge = GPIO.FALLING
+    gpio_active_state = False
   GPIO.setmode(GPIO.BOARD)
   GPIO.setup(gpio_pinnum, GPIO.IN, pull_up_down=gpio_resistor)
   def handler(pin):
       time.sleep(gpio_bouncetime/1000)
-      if GPIO.input(gpio_pinnum): #Debounce check.  If we're still pulled high, it's a real event.
+      if GPIO.input(gpio_pinnum) == gpio_active_state: #Debounce check.  If we're still active, it's a real event.
           s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
           s.connect((zmip, zmport))
           s.send(gpio_mid +'|on+20|' + gpio_escore + '|' + gpio_ecause + '|' + gpio_etext)
